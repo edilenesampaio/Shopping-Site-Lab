@@ -64,7 +64,9 @@ def add_to_cart(melon_id):
     page and display a confirmation message: 'Melon successfully added to
     cart'."""
 
-    # TODO: Finish shopping cart functionality
+    cart[melon_id] = cart.get(melon_id)
+    
+    return render_template("cart.html")
 
     # The logic here should be something like:
     #
@@ -82,19 +84,27 @@ def add_to_cart(melon_id):
 def show_shopping_cart():
     """Display content of shopping cart."""
 
-    # TODO: Display the contents of the shopping cart.
 
     # The logic here will be something like:
     #
     # - get the cart dictionary from the session
+    cart = session.get("cart", {})
     # - create a list to hold melon objects and a variable to hold the total
+    cart_melons = []
     #   cost of the order
+    order_total = 0
     # - loop over the cart dictionary, and for each melon id:
+    for melon_id, qty in cart.items():
+
+        melon = melon.get_by_id(melon_id)
     #    - get the corresponding Melon object
     #    - compute the total cost for that type of melon
+        total_cost = qty * melon.price
+        order_total += total_cost
     #    - add this to the order total
     #    - add quantity and total cost as attributes on the Melon object
     #    - add the Melon object to the list created above
+        cart_melons.append(melon)
     # - pass the total order cost and the list of Melon objects to the template
     #
     # Make sure your function can also handle the case wherein no cart has
@@ -102,6 +112,9 @@ def show_shopping_cart():
 
     return render_template("cart.html")
 
+# cart = cart_melons,
+
+# order_total=order_total
 
 @app.route("/login", methods=["GET"])
 def show_login():
@@ -118,7 +131,17 @@ def process_login():
     dictionary, look up the user, and store them in the session.
     """
 
-    # TODO: Need to implement this!
+    username = request.form['username']
+    password = request.form['password']
+
+    if password == 'Log in successfully':   
+        session['current_user'] = username
+        flash(f'Logged in as {username}')
+        return redirect('/')
+
+    else:
+        flash('Wrong password!')
+        return redirect('/login')
 
     # The logic here should be something like:
     #
